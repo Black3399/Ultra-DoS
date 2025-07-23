@@ -12,9 +12,9 @@ if not url:
 
 # Configuration
 num_threads = 5000               # Running Thread's'
-request_limit = 55000            # Total Thread's'
+request_limit = 99999            # Total Thread's'
 timeout = 5                      # Response Time
-http_method = "POST"             # HTTP (GET, POST, PUT, DELETE)
+http_method = input("Select method EX..GET, PUT, POST, DELETE: ").strip()             # HTTP (GET, POST, PUT, DELETE)
 headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer YOUR_TOKEN"
