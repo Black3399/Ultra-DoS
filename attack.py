@@ -30,7 +30,7 @@ if not url:
 print("\n🔧 Configuration:")
 num_threads = 5000
 request_limit = 99999
-timeout = 5
+timeout = 15
 http_method = input("📡 Select HTTP Method [GET / POST / PUT / DELETE]: ").strip().upper()
 
 headers = {
