@@ -6,7 +6,7 @@ import random
 import json
 import os
 
-# Terminal UI Styling
+# Terminal UI Styling... 
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
     print("\033[1;32m")
@@ -14,6 +14,8 @@ def banner():
     print("   🚀 HIGH-TRAFFIC API TESTER / LOAD TOOL  ")
     print("════════════════════════════════════════════════════════════")
     print(" ⚔️  Author: Badhon-696 | R3D-X Pentest Lab")
+    print(" 📥  Facebook: https://www.facebook.com/Error999BADHON")
+    print(" 📥  Telegram: @error696_dev_community")
     print(" 🔐  Purpose: API Stress Testing / Load Simulation")
     print("════════════════════════════════════════════════════════════")
     print("\033[0m")
