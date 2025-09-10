@@ -30,8 +30,8 @@ if not url:
 
 # Config Inputs
 print("\n🔧 Configuration:")
-num_threads = 5000
-request_limit = 99999
+num_threads = 10000
+request_limit = 99999999
 timeout = 15
 http_method = input("📡 Select HTTP Method [GET / POST / PUT / DELETE]: ").strip().upper()
 
